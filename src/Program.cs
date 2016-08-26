@@ -31,7 +31,7 @@ namespace WordSearcher
                 return;
             }
 
-            if (args[0].Equals("generate", StringComparison.InvariantCultureIgnoreCase))
+            if (args[0].Equals("generate", StringComparison.OrdinalIgnoreCase))
             {
                 int r;
                 int c;
