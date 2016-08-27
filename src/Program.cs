@@ -66,7 +66,7 @@ namespace WordSearcher
                 return;
             }
 
-            StringHash words = new StringHash();
+            StringHash words = new StringHashLinearProbing();
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -92,7 +92,7 @@ namespace WordSearcher
 
                 while (true)
                 {
-                    StringHash threadWords = new StringHash();
+                    StringHash threadWords = new StringHashLinearProbing();
                     Thread t = new Thread(
                                     new ThreadStart(
                                         () =>

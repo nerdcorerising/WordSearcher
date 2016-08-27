@@ -6,6 +6,9 @@
     "allowUnsafe" : true
   },
   "dependencies": {},
+  "runtimes" : {
+    "win7-x64" : {}
+  },
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
