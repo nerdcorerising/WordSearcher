@@ -66,7 +66,7 @@ namespace WordSearcher
                 return;
             }
 
-            StringHash words = new StringHashLinearProbing();
+            StringHash words = new StringHash();
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -92,7 +92,7 @@ namespace WordSearcher
 
                 while (true)
                 {
-                    StringHash threadWords = new StringHashLinearProbing();
+                    StringHash threadWords = new StringHash();
                     Thread t = new Thread(
                                     new ThreadStart(
                                         () =>
@@ -136,11 +136,8 @@ namespace WordSearcher
                 Result result = results[i];
                 result.t.Join();
                 //Console.WriteLine("Thread {0} done, produced {1} results.", i, result.words.Count);
-                foreach (string word in result.words.EnumerateItems())
-                {
-                    words.Add(word);
-                }
-
+                words.AddRange(result.words);
+                
                 Console.WriteLine("After Union words.Count() = {0}", words.Count());
             }
 
