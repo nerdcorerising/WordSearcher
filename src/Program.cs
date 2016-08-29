@@ -287,7 +287,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (row < rowCount && col < colCount)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -303,8 +302,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -319,7 +317,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (row < rowCount)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -335,8 +332,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -350,7 +346,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (row < rowCount && col >= 0)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -366,8 +361,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -382,7 +376,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (col < colCount)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -398,8 +391,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -413,7 +405,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (col >= 0)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -429,8 +420,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -444,7 +434,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (row >= 0 && col < colCount)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -460,8 +449,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -476,7 +464,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (row >= 0)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -492,8 +479,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -507,7 +493,6 @@ namespace WordSearcher
             int row = currentRow;
             int col = currentCol;
             CharTrie ct = englishWords;
-            string candidate;
             while (row >= 0 && col >= 0)
             {
                 buffer[curPos] = wordSearch[(row * colCount) + col];
@@ -523,8 +508,7 @@ namespace WordSearcher
                 {
                     if (!words.Contains(buffer, curPos))
                     {
-                        candidate = BufferToCandidate(buffer, curPos);
-                        words.Add(candidate);
+                        words.Add(buffer, curPos);
                     }
                 }
 
@@ -585,17 +569,6 @@ namespace WordSearcher
 
                 file.Flush();
             }
-        }
-
-        private static unsafe string BufferToCandidate(char* buffer, int len)
-        {
-            StringBuilder builder = new StringBuilder(len);
-            for (int i = 0; i < len; ++i)
-            {
-                builder.Append(buffer[i]);
-            }
-
-            return builder.ToString();
         }
     }
 }

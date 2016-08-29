@@ -21,7 +21,7 @@ namespace WordSearcher
 
         // Hash a string using fnv-1a. This function gives the same results 
         // as if the other hashing functions were called with identical contents.
-        protected unsafe static uint Hash(string value)
+        private unsafe static uint Hash(string value)
         {
             fixed(char *ptr = value)
             {
@@ -31,7 +31,7 @@ namespace WordSearcher
 
         // Hash an array of chars using fnv-1a. This function gives the same results 
         // as if the other hashing functions were called with identical contents.
-        protected static unsafe uint Hash(char[] buffer, int len)
+        private static unsafe uint Hash(char[] buffer, int len)
         {
             fixed (char *ptr = buffer)
             {
@@ -42,7 +42,7 @@ namespace WordSearcher
         // Hash an array of chars using fnv-1a. This function gives the same results 
         // as if the other hashing functions were called with identical contents.
         // This is separate from Hash(char[], int) so it can be called in an unsafe context.
-        protected static unsafe uint Hash(char *buffer, int len)
+        private static unsafe uint Hash(char *buffer, int len)
         {
             uint hash = fnv32Offset;
 
@@ -57,7 +57,7 @@ namespace WordSearcher
         
         // This equality method is implemented because the default string comparison does a bunch of extra work
         // like culture based comparisons, that is not necessary and a perf hit.
-        protected unsafe static bool Equal(string value, string item)
+        private unsafe static bool Equal(string value, string item)
         {
             fixed(char *ptr = item)
             {
@@ -67,7 +67,7 @@ namespace WordSearcher
 
         // Same as Equal(string, string), but allows checking with a char[] so it doesn't have to be
         // converted in to a string first.
-        protected static unsafe bool Equal(string value, char[] buffer, int count)
+        private static unsafe bool Equal(string value, char[] buffer, int count)
         {
             fixed (char *ptr = buffer)
             {
@@ -77,7 +77,7 @@ namespace WordSearcher
 
         // Same as Equal(string, string), but allows checking with a char * so it doesn't have to be
         // converted in to a string first, and can be called from an unsafe context.
-        protected static unsafe bool Equal(string value, char *buffer, int count)
+        private static unsafe bool Equal(string value, char *buffer, int count)
         {
             if (value.Length != count)
             {
@@ -93,6 +93,17 @@ namespace WordSearcher
             }
 
             return true;
+        }
+
+        private static unsafe string BufferToString(char *buffer, int len)
+        {
+            StringBuilder builder = new StringBuilder(len);
+            for (int i = 0; i < len; ++i)
+            {
+                builder.Append(buffer[i]);
+            }
+
+            return builder.ToString();
         }
 
         internal struct Node
@@ -137,6 +148,32 @@ namespace WordSearcher
             _count = newCount;
         }
 
+        private unsafe bool AddInternal(Node[] data, char *item, int itemLen, uint hash, ref int count)
+        {
+            int pos = (int)(hash % data.Length);
+            while (true)
+            {
+                if(pos >= data.Length)
+                {
+                    pos = 0;
+                }
+
+                if(!data[pos].Initialized)
+                {
+                    data[pos] = new Node(hash, BufferToString(item, itemLen));
+                    count++;
+                    return true;
+                }
+                
+                if(data[pos].Hash == hash && Equal(data[pos].Value, item, itemLen))
+                {
+                    return false;
+                }
+
+                ++pos;
+            }
+        }
+
         private bool AddInternal(Node[] data, string item, uint hash, ref int count)
         {
             int pos = (int)(hash % data.Length);
@@ -162,7 +199,7 @@ namespace WordSearcher
                 ++pos;
             }
         }
-
+        
         public StringHash(int size = InitialSize)
         {
             _data = new Node[size];
@@ -176,6 +213,16 @@ namespace WordSearcher
             }
 
             return AddInternal(_data, item, Hash(item), ref _count);
+        }
+        
+        public unsafe bool Add(char *buffer, int bufferLen)
+        {
+            if(((double)_count / (double)_data.Length) >= MaxLoadFactor)
+            {
+                Resize();
+            }
+
+            return AddInternal(_data, buffer, bufferLen, Hash(buffer, bufferLen), ref _count);
         }
 
         public void AddRange(StringHash hash)
