@@ -95,14 +95,16 @@ namespace WordSearcher
             return true;
         }
 
-        internal class Node
+        internal struct Node
         {
             public Node(uint hash, string value)
             {
                 Hash = hash;
                 Value = value;
+                Initialized = true;
             }
             
+            public bool Initialized { get; private set; }
             public uint Hash { get; private set; }
             public string Value { get; private set; }
         }
@@ -125,7 +127,7 @@ namespace WordSearcher
             int newCount = 0;
             foreach (Node n in _data)
             {
-                if(n != null)
+                if(n.Initialized)
                 {
                     AddInternal(newData, n.Value, n.Hash, ref newCount);
                 }
@@ -145,7 +147,7 @@ namespace WordSearcher
                     pos = 0;
                 }
 
-                if(data[pos] == null)
+                if(!data[pos].Initialized)
                 {
                     data[pos] = new Node(hash, item);
                     count++;
@@ -180,7 +182,7 @@ namespace WordSearcher
         {
             for(int i = 0; i < hash._data.Length; ++i)
             {
-                if(hash._data[i] != null)
+                if(hash._data[i].Initialized)
                 {
                     Add(hash._data[i].Value);
                 }
@@ -200,7 +202,7 @@ namespace WordSearcher
                     i = 0;
                 }
 
-                if(_data[i] == null)
+                if(!_data[i].Initialized)
                 {
                     return false;
                 }
@@ -235,7 +237,7 @@ namespace WordSearcher
                     i = 0;
                 }
 
-                if(_data[i] == null)
+                if(!_data[i].Initialized)
                 {
                     return false;
                 }
@@ -258,7 +260,7 @@ namespace WordSearcher
         {
             foreach(Node n in _data)
             {
-                if(n != null)
+                if(n.Initialized)
                 {
                     yield return n.Value;
                 }
